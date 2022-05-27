@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Remove Space between Table Cells via CSS</title>
+<link rel="stylesheet" type="text/css" href="tailwind.css" />
+<style>
+    body {
+      background:#6b6b69;
+    }
+
+    td.target {
+      position:relative;
+      height: calc(6rem + 2px); /*border*/
+      width: calc(6rem + 2px);
+      border: 1px dashed #666;
+      padding: 0px; /* Apply cell padding */
+    }
+
+    div.piece {
+      height: 6rem;
+      width: 6rem;
+      background-repeat: no-repeat; 
+      background-size: cover;
+    }
+
+    .piece:hover{
+        opacity: 0.4;
+    }
+
+    .trackcard{
+      width: 8rem;
+      height: 8rem;
+      background-color: white;
+    }
+
+    .trackcard:hover{
+        opacity: 0.6;
+    }
+
+    .track_pane{
+        width: calc(4 * 8rem + 2 * 4 * 0.5rem + 2 * 1.25rem);
+        display: flex;
+        background-color: blue;
+        flex-wrap: wrap;
+    }
+    #track_scroll{
+        width: calc(4 * 8rem + 2 * 4 * 0.5rem + 2 * 1.25rem + 20px + 1* 2px);
+        height: 20rem;
+        overflow-y: auto;
+        padding: 1px;
+        border: 1px solid blue;
+    }
+</style>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript">
+    var selected_obj = "";
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.outerHTML);
+        selected_obj = ev.target;
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+
+        var dropitem = ev.dataTransfer.getData("text");
+        var container = $(ev.srcElement);
+        
+        var classnames = container.attr("class");
+        if(classnames == undefined) return;
+        
+        if(classnames.includes("piece")){
+            container.before(dropitem);
+            container.remove();
+        }
+
+        if(classnames.includes("target")){
+            container.empty();
+            container.append(dropitem);
+        }
+
+        $("div.piece").off('dblclick');
+        $("div.piece").on('dblclick',RotateImage);
+        
+        ev.dataTransfer.clearData();
+        //if droped item is in grid, previous item will removed after droped
+        var pclasses = $(selected_obj).parent().attr("class");
+        if(pclasses != undefined && pclasses.includes("target") == true){
+            $(selected_obj).remove();
+        }
+    }
+
+    function RotateImage(){
+        var angle = $(this).attr('ang');
+        angle = angle == undefined ? 0 : parseInt(angle);
+        
+        $(this).css("transform", "rotate("+ ((angle + 90) % 360) +"deg)");
+        $(this).attr('ang',(angle + 90) % 360);
+    }
+
+    $(document).ready(function(){
+        //$("body").fadeIn(1000);
+        $("div.piece").on('dblclick',RotateImage);
+
+        $(".trackcard").on('dblclick',function(){
+            LoadTrack();
+        });
+
+        $(".trackcard").on('click',function(){
+            $(".trackcard").css("opacity",1);
+            $(this).css("opacity",0.6);
+        });
+    });
+
+    function OpenTrackModal() {
+        // body...
+        console.log("opening load track dlg...");
+        $("#load_dlg").fadeIn(1000);
+    }
+
+    function CloseTrackModal() {
+        // body...
+        $("#load_dlg").fadeOut(1000);
+    }
+
+    function SaveTrack() {
+        // body...
+        console.log("loading track...");
+    }
+
+    function LoadTrack() {
+        // body...
+        $("#load_dlg").fadeOut(1000);
+    }
+</script>
+</head>
+<body class="1hidden">
+    <div id="trackui">
+        <div class="mt-10 flex justify-center flex-wrap">
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('1.png');" class="piece">
+            </div>
+          </div>
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('2.png');" class="piece">
+            </div>
+          </div>
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('3.png');" class="piece">
+            </div>
+          </div>
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('4.png');" class="piece">
+            </div>
+          </div>
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('5.png');" class="piece">
+            </div>
+          </div>
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('6.png');" class="piece">
+            </div>
+          </div>
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('7.png');" class="piece">
+            </div>
+          </div>
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('8.png');" class="piece">
+            </div>
+          </div>
+          <div class="m-2"> 
+            <div draggable="true" ondragstart="drag(event)" style="background-image: url('9.png');" class="piece">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex mt-5 justify-center">
+            <table class="bg-mist">
+            <tbody>
+                <tr>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                </tr>
+                <tr>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                </tr>
+                <tr>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                    <td ondrop="drop(event)" ondragover="allowDrop(event)" class="target"></td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+
+        <div class="text-2xl text-center text-black mt-5">
+            <div onclick="OpenTrackModal()" class="rounded px-16 py-2 bg-purple text-white font-bold cursor-pointer uppercase inline hover:opacity-40 mr-5">Load</div>
+
+            <div onclick="SaveTrack()" class="rounded px-16 py-2 bg-purple text-white font-bold cursor-pointer uppercase inline hover:opacity-40">Save</div>
+            <br><br>
+            <span>Build custom track By drag and drop image pieces.</span>
+            <span>If you click on image piece, the image will rotate 90 degree.</span>
+        </div>
+    </div>
+
+    <div id="load_dlg" class="flex justify-center fixed w-full min-h-full overflow-y-auto left-0 top-0 p-10" style="z-index:10000;background-color:rgba(0,0,0,0.6);display: none;">
+        <div>
+          <div class="bg-white px-10 py-2">
+            <div class="text-2xl text-center text-black mt-5 mb-3">
+              <span>Select a Sample track!</span>
+            </div>
+            <div id="track_scroll">
+                <div class="track_pane bg-blue p-5 flex flex-wrap">
+                  <div class="m-2">
+                    <div class="trackcard">1</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">2</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">3</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">4</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">5</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">6</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">7</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">8</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">9</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">10</div>
+                  </div>
+                  <div class="m-2">
+                    <div class="trackcard">11</div>
+                  </div>
+                </div>
+            </div>
+            <div class="text-2xl text-center text-black mt-5">
+                <div class="rounded px-16 py-2 bg-oslo-grey text-white font-bold cursor-pointer uppercase inline-block hover:opacity-40 mr-5" onclick="CloseTrackModal()">Cancel</div>
+                <div class="rounded px-16 py-2 bg-purple text-white font-bold cursor-pointer uppercase inline-block hover:opacity-80" onclick="LoadTrack()">Ok</div>
+            </div>
+          </div>
+        </div>
+    </div>
+</body>
+</html>
